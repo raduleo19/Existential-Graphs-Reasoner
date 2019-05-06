@@ -20,13 +20,13 @@ members
 
 ## Contributors
 
-  ###TO DO 
-  ####Rica Radu Leonard 
+###TO DO 
+####Rica Radu Leonard 
     |double_cut(L)
     |possible_deiterations()
     |erase(L)
     
-  ####Ciobanu Bogdan
+####Ciobanu Bogdan
     |possible_double_cuts()
     |deiterate(L)
     |possible_erasures()
