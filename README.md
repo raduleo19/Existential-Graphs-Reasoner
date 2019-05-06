@@ -20,11 +20,11 @@ members
 
 ## Team - TO DO
 ### Rica Radu Leonard 
-    |double_cut(L)
-    |possible_deiterations()
-    |erase(L)
+    >double_cut(L)
+    >possible_deiterations()
+    >erase(L)
     
 ### Ciobanu Bogdan
-    |possible_double_cuts()
-    |deiterate(L)
-    |possible_erasures()
+    >possible_double_cuts()
+    >deiterate(L)
+    >possible_erasures()
