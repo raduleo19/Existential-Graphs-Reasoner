@@ -1,7 +1,5 @@
 # Tema 3 - Existential Graphs Reasoner
 
-## Wiki
-
 To run the checker, all you have to do is execute the "./run_all.sh" command.
 This command compiles your source files, then compiles the test source files
 (present in the _test folder) and runs all the test executables newly created.
