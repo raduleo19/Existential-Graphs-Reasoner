@@ -19,13 +19,13 @@ members
 - aegraph.cpp
 
 ## Team
-### TO DO 
+### **TO DO** 
 #### Rica Radu Leonard 
     |double_cut(L)
     |possible_deiterations()
     |erase(L)
     
-### #Ciobanu Bogdan
+#### Ciobanu Bogdan
     |possible_double_cuts()
     |deiterate(L)
     |possible_erasures()
