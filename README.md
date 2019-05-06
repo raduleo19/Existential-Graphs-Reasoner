@@ -18,13 +18,15 @@ The archive you have to upload to vmchecker should contain:
 members
 - aegraph.cpp
 
-## Team - TO DO
+## Team
 ### Rica Radu Leonard 
+    >possible_double_cuts()
+    To Do:
     >double_cut(L)
-    >possible_deiterations()
     >erase(L)
     
 ### Ciobanu Bogdan
-    >possible_double_cuts()
+    To Do:
+    >possible_deiterations()
     >deiterate(L)
     >possible_erasures()
