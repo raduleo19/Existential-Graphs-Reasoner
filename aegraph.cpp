@@ -250,8 +250,30 @@ std::vector<std::vector<int>> AEGraph::get_paths_to(const AEGraph& other)
 }
 
 std::vector<std::vector<int>> AEGraph::possible_double_cuts() const {
-    // 10p
-    return {};
+    std::vector<std::vector<int>> total_result;
+    int id = 0;
+    for (auto it : subgraphs) {
+        std::vector<int> current_result;
+        if (it.num_atoms() == 0 && it.num_subgraphs() == 1) {
+            current_result.push_back(id);
+        }
+        if (!current_result.empty()) {
+            total_result.push_back(current_result);
+        }
+        std::vector<std::vector<int>> result = it.possible_double_cuts();
+        if (!result.empty()) {
+            for (auto aux : result) {
+                std::vector<int> result_with_current_added;
+                result_with_current_added.push_back(id);
+                for (auto aux2 : aux) {
+                    result_with_current_added.push_back(aux2);
+                }
+                total_result.push_back(result_with_current_added);
+            }
+        }
+        id++;
+    }
+    return total_result;
 }
 
 AEGraph AEGraph::double_cut(std::vector<int> where) const {
