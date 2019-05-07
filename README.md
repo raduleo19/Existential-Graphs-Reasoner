@@ -23,10 +23,11 @@ members
 Done:
 * possible_double_cuts()
 * double_cut(L)
-
-To Do:
-* possible_erasures()
 * erase(L)
+
+Partially Working:
+* possible_erasures()
+
     
 ### Ciobanu Bogdan
 To Do:
