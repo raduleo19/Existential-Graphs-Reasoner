@@ -24,6 +24,7 @@ Done:
 * possible_double_cuts()
 * double_cut(L)
 * erase(L)
+* skel for deiterate(L)
 
 ### Rica Radu Leonard & Ciobanu Bogdan
 Done:
