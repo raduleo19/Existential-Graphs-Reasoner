@@ -277,8 +277,31 @@ std::vector<std::vector<int>> AEGraph::possible_double_cuts() const {
 }
 
 AEGraph AEGraph::double_cut(std::vector<int> where) const {
-    // 10p
-    return AEGraph("()");
+    AEGraph new_graph = *this;
+    if (where.size() == 1) {
+        std::vector<AEGraph> new_subgraphs;
+        for (auto it : new_graph.subgraphs[where[0]].subgraphs[0].atoms) {
+            new_graph.atoms.push_back(it);
+        }
+        for (auto it : new_graph.subgraphs[where[0]].subgraphs[0].subgraphs) {
+            new_subgraphs.push_back(it);
+        }
+        for (size_t i = 0; i < new_graph.subgraphs.size(); ++i) {
+            if (i != where[0]) {
+                new_subgraphs.push_back(new_graph.subgraphs[i]);
+            }
+        }
+        new_graph.subgraphs = new_subgraphs;
+    } else if (where.size() > 1) {
+        std::vector<int> new_where;
+        for (size_t i = 1; i < where.size(); ++i) {
+            new_where.push_back(where[i]);
+        }
+        new_graph.subgraphs[where[0]] =
+            new_graph.subgraphs[where[0]].double_cut(new_where);
+    }
+
+    return new_graph;
 }
 
 
