@@ -313,8 +313,20 @@ std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
 
 
 AEGraph AEGraph::erase(std::vector<int> where) const {
-    // 10p
-    return AEGraph("()");
+    AEGraph new_graph = *this;
+    if (where.size() == 1) {
+        if (where[0] < new_graph.num_subgraphs()) {
+            new_graph.subgraphs.erase(new_graph.subgraphs.begin() + where[0]);
+        } else {
+            new_graph.atoms.erase(new_graph.atoms.begin() + where[0] - new_graph.num_subgraphs());
+        }
+    } else if (where.size() > 1) {
+        std::vector<int> new_where =
+            std::vector<int>(where.begin() + 1, where.end());
+        new_graph.subgraphs[where[0]] =
+            new_graph.subgraphs[where[0]].erase(new_where);
+    }
+    return new_graph;
 }
 
 
