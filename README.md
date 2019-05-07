@@ -25,10 +25,10 @@ Done:
 * double_cut(L)
 * erase(L)
 
-Partially Working:
+### Rica Radu Leonard & Ciobanu Bogdan
+Done:
 * possible_erasures()
 
-    
 ### Ciobanu Bogdan
 To Do:
 * possible_deiterations()
