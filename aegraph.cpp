@@ -302,9 +302,9 @@ AEGraph AEGraph::double_cut(std::vector<int> where) const {
 
 std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
     std::vector<std::vector<int>> total_result;
-
+    
+    if ((level & 1) && num_subgraphs() >= 2) {
     for (int i = 0; i < this->size(); ++i) {
-        if (level & 1) {
             std::vector<int> current_result = {i};
 
             total_result.push_back(current_result);
@@ -314,9 +314,6 @@ std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
     int id = 0;
 
     for (auto son : subgraphs) {
-        if (son.num_atoms() == 1 || (son.num_atoms() == 0 && level % 2 == 0))
-            continue;
-
         std::vector<std::vector<int>> sons_result =
             son.possible_erasures(1 + level);
 
@@ -331,7 +328,6 @@ std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
 
     return total_result;
 }
-
 
 AEGraph AEGraph::erase(std::vector<int> where) const {
     AEGraph new_graph = *this;
@@ -356,6 +352,31 @@ AEGraph AEGraph::erase(std::vector<int> where) const {
 
 std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
     std::vector<std::vector<int>> total_result;
+
+    std::vector<std::string> previous_sons;
+
+    int id = 0;
+
+    for (auto son : subgraphs) {
+        for (auto cut_sons : previous_sons) {
+            std::vector<std::vector<int>> sons_result =
+                                          son.get_paths_to(cut_sons);
+            for (auto i : sons_result)
+                i.insert(i.begin(), id),
+                total_result.push_back(i);
+        }
+
+        previous_sons.push_back(son.repr());
+
+        std::vector<std::vector<int>> sons_results =
+                                      son.possible_deiterations();
+        for (auto i : sons_results)
+            i.insert(i.begin(), id),
+            total_result.push_back(i);
+
+        ++id;
+    }
+
     return total_result;
 }
 
