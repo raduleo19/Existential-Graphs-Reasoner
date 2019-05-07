@@ -336,7 +336,17 @@ std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
 }
 
 AEGraph AEGraph::deiterate(std::vector<int> where) const {
-    // 10p
-    return AEGraph("()");
+    AEGraph new_graph = *this;
+    if (where.size() == 1) {
+        // TO DO : Completeaza aici deiterate pentru graful current,
+        // recursivitatea ar trebui sa functioneze asa (asa am facut la
+        // celelalte)
+    } else if (where.size() > 1) {
+        std::vector<int> new_where =
+            std::vector<int>(where.begin() + 1, where.end());
+        new_graph.subgraphs[where[0]] =
+            new_graph.subgraphs[where[0]].erase(new_where);
+    }
+    return new_graph; 
 }
 
