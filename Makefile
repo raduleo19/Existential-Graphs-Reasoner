@@ -11,3 +11,12 @@ libaegraph.so: aegraph.cpp
 
 clean:
 	rm -f libaegraph.so
+
+debug: 
+	rm -f test
+	g++ test.cpp aegraph.cpp -o test
+
+run_debug:
+	./test
+	cat corect_output.txt
+
