@@ -251,40 +251,52 @@ std::vector<std::vector<int>> AEGraph::get_paths_to(const AEGraph& other)
 
 std::vector<std::vector<int>> AEGraph::possible_double_cuts() const {
     std::vector<std::vector<int>> total_result;
+    
     int id = 0;
+    
     for (auto son : subgraphs) {
         if (son.num_atoms() == 0 && son.num_subgraphs() == 1) {
             std::vector<int> current_result = {id};
             total_result.push_back(current_result);
         }
+        
         std::vector<std::vector<int>> sons_result = son.possible_double_cuts();
+        
         for (auto son_result : sons_result) {
             son_result.insert(son_result.begin(), id);
             total_result.push_back(son_result);
         }
-        id++;
+        
+        ++id;
     }
+    
     return total_result;
 }
 
 AEGraph AEGraph::double_cut(std::vector<int> where) const {
     AEGraph new_graph = *this;
+    
     if (where.size() == 1) {
+        
         new_graph.atoms.insert(
             new_graph.atoms.begin(),
             new_graph.subgraphs[where[0]].subgraphs[0].atoms.begin(),
             new_graph.subgraphs[where[0]].subgraphs[0].atoms.end());
+        
         new_graph.subgraphs.insert(
             new_graph.subgraphs.begin(),
             new_graph.subgraphs[where[0]].subgraphs[0].subgraphs.begin(),
             new_graph.subgraphs[where[0]].subgraphs[0].subgraphs.end());
+        
         new_graph.subgraphs.erase(new_graph.subgraphs.begin() + where[0]);
     } else if (where.size() > 1) {
         std::vector<int> new_where =
-            std::vector<int>(where.begin() + 1, where.end());
+            std::vector<int>(1 + where.begin(), where.end());
+            
         new_graph.subgraphs[where[0]] =
             new_graph.subgraphs[where[0]].double_cut(new_where);
     }
+    
     return new_graph;
 }
 
@@ -293,7 +305,7 @@ std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
     // TO DO: Avoid the case ([[A]]) -> ([[]])
     std::vector<std::vector<int>> total_result;
     for (int i = 0; i < this->size(); ++i) {
-        if (level % 2 == 1) {
+        if (level & 1) {
             std::vector<int> current_result = {i};
             total_result.push_back(current_result);
         }
