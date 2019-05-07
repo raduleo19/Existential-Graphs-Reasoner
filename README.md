@@ -20,14 +20,14 @@ members
 
 ## Team
 ### Rica Radu Leonard 
-    >possible_double_cuts()
-    >double_cut(L)
+    -possible_double_cuts()
+    -double_cut(L)
     To Do:
-    >possible_erasures()
-    >erase(L)
+    -possible_erasures()
+    -erase(L)
     
 ### Ciobanu Bogdan
     To Do:
-    >possible_deiterations()
-    >deiterate(L)
+    -possible_deiterations()
+    -deiterate(L)
 
