@@ -303,8 +303,8 @@ AEGraph AEGraph::double_cut(std::vector<int> where) const {
 std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
     std::vector<std::vector<int>> total_result;
     
-    if ((level & 1) && num_subgraphs() >= 2) {
-    for (int i = 0; i < this->size(); ++i) {
+    if ((level & 1) && num_subgraphs() >= 2 || level == -1) {
+        for (int i = 0; i < this->size(); ++i) {
             std::vector<int> current_result = {i};
 
             total_result.push_back(current_result);
