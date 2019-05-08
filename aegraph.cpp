@@ -301,8 +301,6 @@ AEGraph AEGraph::double_cut(std::vector<int> where) const {
 
 
 std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
-    // Looks like it is working
-    // TO DO: More tests
     std::vector<std::vector<int>> total_result;
 
     if (level & 1) {
@@ -311,20 +309,20 @@ std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
             total_result.push_back(current_result);
         }
     }
+
     int id = 0;
     for (auto son : subgraphs) {
-        auto temp = son;
         int skipped = 0;
-        while (temp.num_atoms() == 0 && temp.num_subgraphs() == 1) {
-            temp = temp.subgraphs[0];
+        while (son.num_atoms() == 0 && son.num_subgraphs() == 1) {
+            son = son.subgraphs[0];
             skipped++;
         }
-        if (temp.num_atoms() == 1 && temp.num_subgraphs() == 0) {
+        if (son.num_atoms() == 1 && son.num_subgraphs() == 0) {
             id++;
             continue;
         }
         std::vector<std::vector<int>> sons_result =
-            temp.possible_erasures(level + 1 + skipped);
+            son.possible_erasures(level + 1 + skipped);
         for (auto son_result : sons_result) {
             for (int i = 0; i < skipped; ++i) {
                 son_result.insert(son_result.begin(), 0);
@@ -334,6 +332,7 @@ std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
         }
         id++;
     }
+
     return total_result;
 }
 
