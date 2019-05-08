@@ -301,105 +301,38 @@ AEGraph AEGraph::double_cut(std::vector<int> where) const {
 
 
 std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
-    // Looks like it is working
-    // TO DO: More tests
     std::vector<std::vector<int>> total_result;
-    std::vector<int> level_stack, last_forked;
-    std::vector<std::pair <AEGraph, std::vector<int> > > dfs_stack;
-    
-    last_forked.push_back(-1);
-    dfs_stack.push_back({*this, {}});
-    level_stack.push_back(0);
-    
-    while (!dfs_stack.empty()) {
-        std::pair<AEGraph, std::vector<int> > current = dfs_stack.back();
-        int current_level = level_stack.back(),
-            last_fork = last_forked.back();
-        last_forked.pop_back();
-        dfs_stack.pop_back();
-        level_stack.pop_back();
 
-        int id = 0;
-        std::vector<int> maneuver = current.second;
-        
-        if (current.first.size() >= 2)
-            last_fork = 0;
-        else
-            ++last_fork;
-/*
-        std::cerr << "STACK: ";
-        for (auto i : current.second)
-            std::cerr << i;
-        std::cerr << " - " << current_level;
-        std::cerr << std::endl << std::endl;
-*/
-        //std::cerr << current.first.size() << " vs " << current.first.subgraphs.size() << std::endl;
-
-        for (auto i : current.first.subgraphs) {
-            maneuver.push_back(id);
-            dfs_stack.push_back({i, maneuver});
-            level_stack.push_back(current_level + 1);
-            last_forked.push_back(last_fork);
-            if ((current_level % 2 == 0) && last_fork < 1) {
-                total_result.push_back(maneuver);
-            }
-            maneuver.pop_back();
-            ++id;
-        }
-
-        for (auto i : current.first.atoms) {
-            //std::cerr << "last forked: " << last_fork << std::endl;
-            maneuver.push_back(id);
-            if ((current_level % 2 == 0) && last_fork < 1) {
-                total_result.push_back(maneuver);
-            }
-            maneuver.pop_back();
-            ++id;
-        }
-    }
-/*
-    if ((level & 1) && num_subgraphs() >= 2 || level == -1) {
+    if (level & 1) {
         for (int i = 0; i < this->size(); ++i) {
             std::vector<int> current_result = {i};
-
             total_result.push_back(current_result);
         }
     }
+
     int id = 0;
-
     for (auto son : subgraphs) {
-<<<<<<< HEAD
-        std::vector<std::vector<int>> sons_result =
-            son.possible_erasures(1 + level);
-
-=======
-        auto temp = son;
         int skipped = 0;
-        while (temp.num_atoms() == 0 && temp.num_subgraphs() == 1) {
-            temp = temp.subgraphs[0];
+        while (son.num_atoms() == 0 && son.num_subgraphs() == 1) {
+            son = son.subgraphs[0];
             skipped++;
         }
-        if (temp.num_atoms() == 1 && temp.num_subgraphs() == 0) {
+        if (son.num_atoms() == 1 && son.num_subgraphs() == 0) {
             id++;
             continue;
         }
         std::vector<std::vector<int>> sons_result =
-            temp.possible_erasures(level + 1 + skipped);
->>>>>>> parent of 8f8c1aa... Update aegraph.cpp
+            son.possible_erasures(level + 1 + skipped);
         for (auto son_result : sons_result) {
+            for (int i = 0; i < skipped; ++i) {
+                son_result.insert(son_result.begin(), 0);
+            }
             son_result.insert(son_result.begin(), id);
-
             total_result.push_back(son_result);
         }
-<<<<<<< HEAD
-
-        ++id;
-    }
-*/
-=======
         id++;
     }
->>>>>>> parent of 8f8c1aa... Update aegraph.cpp
+
     return total_result;
 }
 
