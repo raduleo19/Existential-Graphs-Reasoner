@@ -423,8 +423,8 @@ std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
 }
 
 AEGraph AEGraph::deiterate(std::vector<int> where) const {
-    /*
-    AEGraph new_graph = *this; merge si asta
+    /*  merge si asta
+    AEGraph new_graph = *this;
     new_graph.subgraphs[where[0]] = new_graph.subgraphs[where[0]].
     erase(std::vector<int>(where.begin() + 1, where.end()));
     return new_graph;
