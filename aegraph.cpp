@@ -8,6 +8,7 @@
 #include <map>
 #include <utility>
 #include <cassert>
+
 #include "./aegraph.h"
 
 std::string strip(std::string s) {
@@ -302,35 +303,49 @@ AEGraph AEGraph::double_cut(std::vector<int> where) const {
 
 std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
     std::vector<std::vector<int>> total_result;
+    std::vector<int> level_stack, last_forked;
+    std::vector<std::pair <AEGraph, std::vector<int> > > dfs_stack;
 
-    if (level & 1) {
-        for (int i = 0; i < this->size(); ++i) {
-            std::vector<int> current_result = {i};
-            total_result.push_back(current_result);
-        }
-    }
+    last_forked.push_back(level);
+    dfs_stack.push_back({*this, {}});
+    level_stack.push_back(0);
 
-    int id = 0;
-    for (auto son : subgraphs) {
-        int skipped = 0;
-        while (son.num_atoms() == 0 && son.num_subgraphs() == 1) {
-            son = son.subgraphs[0];
-            skipped++;
-        }
-        if (son.num_atoms() == 1 && son.num_subgraphs() == 0) {
-            id++;
-            continue;
-        }
-        std::vector<std::vector<int>> sons_result =
-            son.possible_erasures(level + 1 + skipped);
-        for (auto son_result : sons_result) {
-            for (int i = 0; i < skipped; ++i) {
-                son_result.insert(son_result.begin(), 0);
+    while (!dfs_stack.empty()) {
+        std::pair<AEGraph, std::vector<int> > current = dfs_stack.back();
+        int current_level = level_stack.back(),
+            last_fork = last_forked.back();
+        last_forked.pop_back();
+        dfs_stack.pop_back();
+        level_stack.pop_back();
+
+        int id = 0;
+        std::vector<int> maneuver = current.second;
+
+        if (current.first.size() >= 2)
+            last_fork = 0;
+        else
+            ++last_fork;
+
+        for (auto i : current.first.subgraphs) {
+            maneuver.push_back(id);
+            dfs_stack.push_back({i, maneuver});
+            level_stack.push_back(current_level + 1);
+            last_forked.push_back(last_fork);
+            if ((current_level % 2 == 0) && last_fork < 1) {
+                total_result.push_back(maneuver);
             }
-            son_result.insert(son_result.begin(), id);
-            total_result.push_back(son_result);
+            maneuver.pop_back();
+            ++id;
         }
-        id++;
+
+        for (auto i : current.first.atoms) {
+            maneuver.push_back(id);
+            if ((current_level % 2 == 0) && last_fork < 1) {
+                total_result.push_back(maneuver);
+            }
+            maneuver.pop_back();
+            ++id;
+        }
     }
 
     return total_result;
@@ -360,35 +375,50 @@ AEGraph AEGraph::erase(std::vector<int> where) const {
 std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
     std::vector<std::vector<int>> total_result;
 
-    std::vector<std::string> previous_sons;
-
-    int id = 0;
-
     for (auto son : subgraphs) {
-        for (auto cut_sons : previous_sons) {
-            std::vector<std::vector<int>> sons_result =
-                                          son.get_paths_to(cut_sons);
-            for (auto i : sons_result)
+        int id = 0;
+        for (auto other_sons : subgraphs) {
+            if (son != other_sons) {
+                std::vector<std::vector<int>> local_results = other_sons.get_paths_to(son);
+                for (auto i : local_results)
+                    i.insert(i.begin(), id),
+                    total_result.push_back(i);
+            }
+
+            std::vector<std::vector<int>> son_results = other_sons.possible_deiterations();
+            for (auto i : son_results)
                 i.insert(i.begin(), id),
                 total_result.push_back(i);
+            ++id;
         }
-
-        previous_sons.push_back(son.repr());
-
-        std::vector<std::vector<int>> sons_results =
-                                      son.possible_deiterations();
-        for (auto i : sons_results)
-            i.insert(i.begin(), id),
-            total_result.push_back(i);
-
-        ++id;
     }
+
+    for (auto atom : atoms) {
+        int id = 0;
+        for (auto other_sons : subgraphs) {
+            std::vector<std::vector<int>> local_results = other_sons.get_paths_to(atom);
+            for (auto i : local_results)
+                i.insert(i.begin(), id),
+                total_result.push_back(i);
+
+            std::vector<std::vector<int>> son_results = other_sons.possible_deiterations();
+            for (auto i : son_results)
+                i.insert(i.begin(), id),
+                total_result.push_back(i);
+            ++id;
+        }
+    }
+
+    std::sort(total_result.begin(), total_result.end());
+
+    std::vector<std::vector<int>>::iterator it = std::unique(total_result.begin(), total_result.end());
+    total_result.erase(it, total_result.end());
 
     return total_result;
 }
 
 AEGraph AEGraph::deiterate(std::vector<int> where) const {
-    AEGraph new_graph = *this;
+    AEGraph new_graph = *this; /// cand where.size == 1 ia pathurile din nodu curent si aplica erase pe ele
     if (where.size() == 1) {
         // TO DO : Completeaza aici deiterate pentru graful current,
         // recursivitatea ar trebui sa functioneze asa (asa am facut la
@@ -401,4 +431,3 @@ AEGraph AEGraph::deiterate(std::vector<int> where) const {
     }
     return new_graph;
 }
-
