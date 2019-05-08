@@ -379,13 +379,15 @@ std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
         int id = 0;
         for (auto other_sons : subgraphs) {
             if (son != other_sons) {
-                std::vector<std::vector<int>> local_results = other_sons.get_paths_to(son);
+                std::vector<std::vector<int>> local_results =
+                            other_sons.get_paths_to(son);
                 for (auto i : local_results)
                     i.insert(i.begin(), id),
                     total_result.push_back(i);
             }
 
-            std::vector<std::vector<int>> son_results = other_sons.possible_deiterations();
+            std::vector<std::vector<int>> son_results =
+                            other_sons.possible_deiterations();
             for (auto i : son_results)
                 i.insert(i.begin(), id),
                 total_result.push_back(i);
@@ -396,12 +398,14 @@ std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
     for (auto atom : atoms) {
         int id = 0;
         for (auto other_sons : subgraphs) {
-            std::vector<std::vector<int>> local_results = other_sons.get_paths_to(atom);
+            std::vector<std::vector<int>> local_results =
+                            other_sons.get_paths_to(atom);
             for (auto i : local_results)
                 i.insert(i.begin(), id),
                 total_result.push_back(i);
 
-            std::vector<std::vector<int>> son_results = other_sons.possible_deiterations();
+            std::vector<std::vector<int>> son_results =
+                            other_sons.possible_deiterations();
             for (auto i : son_results)
                 i.insert(i.begin(), id),
                 total_result.push_back(i);
@@ -411,14 +415,35 @@ std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
 
     std::sort(total_result.begin(), total_result.end());
 
-    std::vector<std::vector<int>>::iterator it = std::unique(total_result.begin(), total_result.end());
+    std::vector<std::vector<int>>::iterator it = std::unique
+                          (total_result.begin(), total_result.end());
     total_result.erase(it, total_result.end());
 
     return total_result;
 }
 
 AEGraph AEGraph::deiterate(std::vector<int> where) const {
+    /*
+    AEGraph new_graph = *this; merge si asta
+    new_graph.subgraphs[where[0]] = new_graph.subgraphs[where[0]].
+    erase(std::vector<int>(where.begin() + 1, where.end()));
+    return new_graph;
+    */
     AEGraph new_graph = *this;
-    new_graph.subgraphs[where[0]] = new_graph.subgraphs[where[0]].erase(std::vector<int>(where.begin() + 1, where.end()));
+
+    if (where.size() == 1) {
+        if (where[0] < new_graph.num_subgraphs()) {
+            new_graph.subgraphs.erase(new_graph.subgraphs.begin() + where[0]);
+        } else {
+            new_graph.atoms.erase(new_graph.atoms.begin()
+                                  + where[0] - new_graph.num_subgraphs());
+        }
+    } else if (where.size() > 1) {
+        std::vector<int> new_where =
+            std::vector<int>(1 + where.begin(), where.end());
+        new_graph.subgraphs[where[0]] =
+            new_graph.subgraphs[where[0]].deiterate(new_where);
+    }
+
     return new_graph;
 }
