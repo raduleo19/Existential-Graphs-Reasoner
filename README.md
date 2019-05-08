@@ -31,7 +31,7 @@ Done:
 * possible_erasures()
 
 ### Ciobanu Bogdan
-To Do:
+Done:
 * possible_deiterations()
 * deiterate(L)
 
