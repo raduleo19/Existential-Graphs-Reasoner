@@ -1,25 +1,25 @@
 // Copyright 2019 Luca Istrate, Danut Matei
-#include <vector>
-#include <string>
-#include <sstream>
-#include <iostream>
 #include <algorithm>
-#include <set>
-#include <map>
-#include <utility>
 #include <cassert>
+#include <iostream>
+#include <map>
+#include <set>
+#include <sstream>
+#include <string>
+#include <utility>
+#include <vector>
 
 #include "./aegraph.h"
 
 std::string strip(std::string s) {
     // deletes whitespace from the beginning and end of the string
     s.erase(0, s.find_first_not_of(" \n\r\t"));
-    s.erase(s.find_last_not_of(" \n\r\t")+1);
+    s.erase(s.find_last_not_of(" \n\r\t") + 1);
     return s;
 }
 
 std::pair<std::string, std::string> split_first(std::string s,
-    char delimiter = ',') {
+                                                char delimiter = ',') {
     // returns a pair that contains: <first_cut, rest_of_graph>
 
     int numOpen = 0;
@@ -28,17 +28,14 @@ std::pair<std::string, std::string> split_first(std::string s,
     for (int i = 0; i < len; i++) {
         char c = s[i];
         if (c == delimiter && numOpen == 0)
-            return std::make_pair(
-                    strip(s.substr(0, i)), strip(s.substr(i+1, len)));
-        if (c == '[')
-            numOpen += 1;
-        if (c == ']')
-            numOpen -= 1;
+            return std::make_pair(strip(s.substr(0, i)),
+                                  strip(s.substr(i + 1, len)));
+        if (c == '[') numOpen += 1;
+        if (c == ']') numOpen -= 1;
     }
 
     return {strip(s), std::string()};
 }
-
 
 std::vector<std::string> split_level(std::string s, char delimiter = ',') {
     // splits 's' into separate entities (atoms, subgraphs)
@@ -52,26 +49,15 @@ std::vector<std::string> split_level(std::string s, char delimiter = ',') {
 
         result.push_back(fst);
 
-        if (snd.empty())
-            return result;
+        if (snd.empty()) return result;
     }
 }
 
+int AEGraph::num_subgraphs() const { return subgraphs.size(); }
 
-int AEGraph::num_subgraphs() const {
-    return subgraphs.size();
-}
+int AEGraph::num_atoms() const { return atoms.size(); }
 
-
-int AEGraph::num_atoms() const {
-    return atoms.size();
-}
-
-
-int AEGraph::size() const {
-    return num_atoms() + num_subgraphs();
-}
-
+int AEGraph::size() const { return num_atoms() + num_subgraphs(); }
 
 bool AEGraph::operator<(const AEGraph& other) const {
     return this->repr() < other.repr();
@@ -98,7 +84,7 @@ AEGraph AEGraph::operator[](const int index) const {
     return AEGraph("()");
 }
 
-std::ostream& operator<<(std::ostream &out, const AEGraph &g) {
+std::ostream& operator<<(std::ostream& out, const AEGraph& g) {
     out << g.repr();
     return out;
 }
@@ -109,8 +95,8 @@ AEGraph::AEGraph(std::string representation) {
     char left_sep = representation[0];
     char right_sep = representation[representation.size() - 1];
 
-    assert((left_sep == '(' && right_sep == ')')
-        || (left_sep == '[' && right_sep == ']'));
+    assert((left_sep == '(' && right_sep == ')') ||
+           (left_sep == '[' && right_sep == ']'));
 
     // if the left separator is '(' then the AEGraph is the entire
     // sheet of assertion
@@ -169,7 +155,6 @@ std::string AEGraph::repr() const {
     return left + result + right;
 }
 
-
 void AEGraph::sort() {
     std::sort(atoms.begin(), atoms.end());
 
@@ -182,12 +167,10 @@ void AEGraph::sort() {
 
 bool AEGraph::contains(const std::string other) const {
     // checks if an atom is in a graph
-    if (find(atoms.begin(), atoms.end(), other) != atoms.end())
-        return true;
+    if (find(atoms.begin(), atoms.end(), other) != atoms.end()) return true;
 
     for (const auto& sg : subgraphs)
-        if (sg.contains(other))
-            return true;
+        if (sg.contains(other)) return true;
 
     return false;
 }
@@ -198,14 +181,13 @@ bool AEGraph::contains(const AEGraph& other) const {
         return true;
 
     for (const auto& sg : subgraphs)
-        if (sg.contains(other))
-            return true;
+        if (sg.contains(other)) return true;
 
     return false;
 }
 
-std::vector<std::vector<int>> AEGraph::get_paths_to(const std::string other)
-    const {
+std::vector<std::vector<int>> AEGraph::get_paths_to(
+    const std::string other) const {
     // returns all paths in the tree that lead to an atom like <other>
     std::vector<std::vector<int>> paths;
 
@@ -221,8 +203,7 @@ std::vector<std::vector<int>> AEGraph::get_paths_to(const std::string other)
     for (int i = 0; i < len_subgraphs; i++) {
         if (subgraphs[i].contains(other)) {
             auto r = subgraphs[i].get_paths_to(other);
-            for (auto& v : r)
-                v.insert(v.begin(), i);
+            for (auto& v : r) v.insert(v.begin(), i);
             copy(r.begin(), r.end(), back_inserter(paths));
         }
     }
@@ -230,8 +211,8 @@ std::vector<std::vector<int>> AEGraph::get_paths_to(const std::string other)
     return paths;
 }
 
-std::vector<std::vector<int>> AEGraph::get_paths_to(const AEGraph& other)
-    const {
+std::vector<std::vector<int>> AEGraph::get_paths_to(
+    const AEGraph& other) const {
     // returns all paths in the tree that lead to a subgraph like <other>
     std::vector<std::vector<int>> paths;
     int len_subgraphs = num_subgraphs();
@@ -241,8 +222,7 @@ std::vector<std::vector<int>> AEGraph::get_paths_to(const AEGraph& other)
             paths.push_back({i});
         } else {
             auto r = subgraphs[i].get_paths_to(other);
-            for (auto& v : r)
-                v.insert(v.begin(), i);
+            for (auto& v : r) v.insert(v.begin(), i);
             copy(r.begin(), r.end(), back_inserter(paths));
         }
     }
@@ -300,52 +280,37 @@ AEGraph AEGraph::double_cut(std::vector<int> where) const {
     return new_graph;
 }
 
-
 std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
     std::vector<std::vector<int>> total_result;
-    std::vector<int> level_stack, last_forked;
-    std::vector<std::pair <AEGraph, std::vector<int> > > dfs_stack;
 
-    last_forked.push_back(level);
-    dfs_stack.push_back({*this, {}});
-    level_stack.push_back(0);
-
-    while (!dfs_stack.empty()) {
-        std::pair<AEGraph, std::vector<int> > current = dfs_stack.back();
-        int current_level = level_stack.back(),
-            last_fork = last_forked.back();
-        last_forked.pop_back();
-        dfs_stack.pop_back();
-        level_stack.pop_back();
-
-        int id = 0;
-        std::vector<int> maneuver = current.second;
-
-        if (current.first.size() >= 2)
-            last_fork = 0;
-        else
-            ++last_fork;
-
-        for (auto i : current.first.subgraphs) {
-            maneuver.push_back(id);
-            dfs_stack.push_back({i, maneuver});
-            level_stack.push_back(current_level + 1);
-            last_forked.push_back(last_fork);
-            if ((current_level % 2 == 0) && last_fork < 1) {
-                total_result.push_back(maneuver);
-            }
-            maneuver.pop_back();
-            ++id;
+    if (level & 1) {
+        for (int i = 0; i < this->size(); ++i) {
+            std::vector<int> current_result = {i};
+            total_result.push_back(current_result);
         }
+    }
 
-        for (auto i : current.first.atoms) {
-            maneuver.push_back(id);
-            if ((current_level % 2 == 0) && last_fork < 1) {
-                total_result.push_back(maneuver);
-            }
-            maneuver.pop_back();
-            ++id;
+    int id = 0;
+    for (auto son : subgraphs) {
+        int skipped = 0;
+        while (son.num_atoms() == 0 && son.num_subgraphs() == 1) {
+            son = son.subgraphs[0];
+            skipped++;
         }
+        if (son.num_atoms() == 1 && son.num_subgraphs() == 0) {
+            id++;
+            continue;
+        }
+        std::vector<std::vector<int>> sons_result =
+            son.possible_erasures(level + 1 + skipped);
+        for (auto son_result : sons_result) {
+            for (int i = 0; i < skipped; ++i) {
+                son_result.insert(son_result.begin(), 0);
+            }
+            son_result.insert(son_result.begin(), id);
+            total_result.push_back(son_result);
+        }
+        id++;
     }
 
     return total_result;
@@ -358,8 +323,8 @@ AEGraph AEGraph::erase(std::vector<int> where) const {
         if (where[0] < new_graph.num_subgraphs()) {
             new_graph.subgraphs.erase(new_graph.subgraphs.begin() + where[0]);
         } else {
-            new_graph.atoms.erase(new_graph.atoms.begin()
-                                  + where[0] - new_graph.num_subgraphs());
+            new_graph.atoms.erase(new_graph.atoms.begin() + where[0] -
+                                  new_graph.num_subgraphs());
         }
     } else if (where.size() > 1) {
         std::vector<int> new_where =
@@ -371,7 +336,6 @@ AEGraph AEGraph::erase(std::vector<int> where) const {
     return new_graph;
 }
 
-
 std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
     std::vector<std::vector<int>> total_result;
 
@@ -380,17 +344,15 @@ std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
         for (auto other_sons : subgraphs) {
             if (son != other_sons) {
                 std::vector<std::vector<int>> local_results =
-                            other_sons.get_paths_to(son);
+                    other_sons.get_paths_to(son);
                 for (auto i : local_results)
-                    i.insert(i.begin(), id),
-                    total_result.push_back(i);
+                    i.insert(i.begin(), id), total_result.push_back(i);
             }
 
             std::vector<std::vector<int>> son_results =
-                            other_sons.possible_deiterations();
+                other_sons.possible_deiterations();
             for (auto i : son_results)
-                i.insert(i.begin(), id),
-                total_result.push_back(i);
+                i.insert(i.begin(), id), total_result.push_back(i);
             ++id;
         }
     }
@@ -399,44 +361,36 @@ std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
         int id = 0;
         for (auto other_sons : subgraphs) {
             std::vector<std::vector<int>> local_results =
-                            other_sons.get_paths_to(atom);
+                other_sons.get_paths_to(atom);
             for (auto i : local_results)
-                i.insert(i.begin(), id),
-                total_result.push_back(i);
+                i.insert(i.begin(), id), total_result.push_back(i);
 
             std::vector<std::vector<int>> son_results =
-                            other_sons.possible_deiterations();
+                other_sons.possible_deiterations();
             for (auto i : son_results)
-                i.insert(i.begin(), id),
-                total_result.push_back(i);
+                i.insert(i.begin(), id), total_result.push_back(i);
             ++id;
         }
     }
 
     std::sort(total_result.begin(), total_result.end());
 
-    std::vector<std::vector<int>>::iterator it = std::unique
-                          (total_result.begin(), total_result.end());
+    std::vector<std::vector<int>>::iterator it =
+        std::unique(total_result.begin(), total_result.end());
     total_result.erase(it, total_result.end());
 
     return total_result;
 }
 
 AEGraph AEGraph::deiterate(std::vector<int> where) const {
-    /*  merge si asta
-    AEGraph new_graph = *this;
-    new_graph.subgraphs[where[0]] = new_graph.subgraphs[where[0]].
-    erase(std::vector<int>(where.begin() + 1, where.end()));
-    return new_graph;
-    */
     AEGraph new_graph = *this;
 
     if (where.size() == 1) {
         if (where[0] < new_graph.num_subgraphs()) {
             new_graph.subgraphs.erase(new_graph.subgraphs.begin() + where[0]);
         } else {
-            new_graph.atoms.erase(new_graph.atoms.begin()
-                                  + where[0] - new_graph.num_subgraphs());
+            new_graph.atoms.erase(new_graph.atoms.begin() + where[0] -
+                                  new_graph.num_subgraphs());
         }
     } else if (where.size() > 1) {
         std::vector<int> new_where =
