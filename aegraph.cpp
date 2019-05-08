@@ -301,6 +301,8 @@ AEGraph AEGraph::double_cut(std::vector<int> where) const {
 
 
 std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
+    // Looks like it is working
+    // TO DO: More tests
     std::vector<std::vector<int>> total_result;
     std::vector<int> level_stack, last_forked;
     std::vector<std::pair <AEGraph, std::vector<int> > > dfs_stack;
@@ -363,22 +365,41 @@ std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
             total_result.push_back(current_result);
         }
     }
-
     int id = 0;
 
     for (auto son : subgraphs) {
+<<<<<<< HEAD
         std::vector<std::vector<int>> sons_result =
             son.possible_erasures(1 + level);
 
+=======
+        auto temp = son;
+        int skipped = 0;
+        while (temp.num_atoms() == 0 && temp.num_subgraphs() == 1) {
+            temp = temp.subgraphs[0];
+            skipped++;
+        }
+        if (temp.num_atoms() == 1 && temp.num_subgraphs() == 0) {
+            id++;
+            continue;
+        }
+        std::vector<std::vector<int>> sons_result =
+            temp.possible_erasures(level + 1 + skipped);
+>>>>>>> parent of 8f8c1aa... Update aegraph.cpp
         for (auto son_result : sons_result) {
             son_result.insert(son_result.begin(), id);
 
             total_result.push_back(son_result);
         }
+<<<<<<< HEAD
 
         ++id;
     }
 */
+=======
+        id++;
+    }
+>>>>>>> parent of 8f8c1aa... Update aegraph.cpp
     return total_result;
 }
 
