@@ -24,7 +24,6 @@ Done:
 * possible_double_cuts()
 * double_cut(L)
 * erase(L)
-* skel for deiterate(L)
 * possible_erasures() (recursion)
 
 ### Ciobanu Bogdan
