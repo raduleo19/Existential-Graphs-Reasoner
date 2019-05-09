@@ -13,6 +13,7 @@ bactracking_step(AEGraph graph, std::string op) {
     if (op == "DE") {
         auto steps = graph.possible_deiterations();
         sort(steps.begin(), steps.end());
+        std::reverse(steps.begin(), steps.end());
         for (auto &step : steps) {
             auto g = graph.deiterate(step);
             g.sort();
@@ -25,6 +26,7 @@ bactracking_step(AEGraph graph, std::string op) {
     } else if (op == "DC") {
         auto steps = graph.possible_double_cuts();
         sort(steps.begin(), steps.end());
+        std::reverse(steps.begin(), steps.end());
         for (auto &step : steps) {
             auto g = graph.double_cut(step);
             g.sort();
@@ -37,6 +39,7 @@ bactracking_step(AEGraph graph, std::string op) {
     } else if (op == "E") {
         auto steps = graph.possible_erasures();
         sort(steps.begin(), steps.end());
+        std::reverse(steps.begin(), steps.end());
         for (auto &step : steps) {
             auto g = graph.erase(step);
             g.sort();

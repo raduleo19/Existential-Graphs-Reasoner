@@ -25,13 +25,12 @@ Done:
 * double_cut(L)
 * erase(L)
 * skel for deiterate(L)
-
-### Rica Radu Leonard & Ciobanu Bogdan
-Done:
-* possible_erasures()
+* possible_erasures() (recursion)
 
 ### Ciobanu Bogdan
 Done:
 * possible_deiterations()
 * deiterate(L)
+* possible_erasures() (local stack)
+
 

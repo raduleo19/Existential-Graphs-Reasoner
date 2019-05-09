@@ -234,7 +234,6 @@ std::vector<std::vector<int>> AEGraph::possible_double_cuts() const {
     std::vector<std::vector<int>> total_result;
 
     int id = 0;
-
     for (auto son : subgraphs) {
         if (son.num_atoms() == 0 && son.num_subgraphs() == 1) {
             std::vector<int> current_result = {id};
