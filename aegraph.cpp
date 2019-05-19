@@ -281,7 +281,7 @@ AEGraph AEGraph::double_cut(std::vector<int> where) const {
 std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
   std::vector<std::vector<int>> total_result;
 
-  if (level & 1) {
+  if (level & 1) {  /// at given depth can erase all nodes
     for (int i = 0; i < this->size(); ++i) {
       std::vector<int> current_result = {i};
       total_result.push_back(current_result);
@@ -289,7 +289,7 @@ std::vector<std::vector<int>> AEGraph::possible_erasures(int level) const {
   }
 
   int id = 0;
-  for (auto son : subgraphs) {
+  for (auto son : subgraphs) {  /// TODO zi si tu ce faci pe aici
     int skipped = 0;
     while (son.num_atoms() == 0 && son.num_subgraphs() == 1) {
       son = son.subgraphs[0];
@@ -337,44 +337,50 @@ AEGraph AEGraph::erase(std::vector<int> where) const {
 std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
   std::vector<std::vector<int>> total_result;
 
-  for (auto son : subgraphs) {
+  for (auto son : subgraphs) {  /// for each subgraph in given node
     int id = 0;
     for (auto other_sons : subgraphs) {
-      if (son != other_sons) {
+      if (son != other_sons) {  /** get paths to given subgraph in all
+                                    adjacent subgraphs */
         std::vector<std::vector<int>> local_results =
             other_sons.get_paths_to(son);
         for (auto i : local_results)
-          i.insert(i.begin(), id), total_result.push_back(i);
+          i.insert(i.begin(), id),
+          total_result.push_back(i);
       }
 
+      /// do this recursively in all sons
       std::vector<std::vector<int>> son_results =
           other_sons.possible_deiterations();
-      for (auto i : son_results)
-        i.insert(i.begin(), id), total_result.push_back(i);
+      for (auto i : son_results)  /// and add current node to result
+        i.insert(i.begin(), id),
+        total_result.push_back(i);
       ++id;
     }
   }
 
   for (auto atom : atoms) {
     int id = 0;
-    for (auto other_sons : subgraphs) {
+    for (auto other_sons : subgraphs) {  /// get atoms in adjacent subgraphs
       std::vector<std::vector<int>> local_results =
           other_sons.get_paths_to(atom);
       for (auto i : local_results)
-        i.insert(i.begin(), id), total_result.push_back(i);
+        i.insert(i.begin(), id),
+        total_result.push_back(i);
 
       std::vector<std::vector<int>> son_results =
           other_sons.possible_deiterations();
       for (auto i : son_results)
-        i.insert(i.begin(), id), total_result.push_back(i);
+        i.insert(i.begin(), id),
+        total_result.push_back(i);
       ++id;
     }
   }
 
   std::sort(total_result.begin(), total_result.end());
 
-  std::vector<std::vector<int>>::iterator it =
-      std::unique(total_result.begin(), total_result.end());
+  std::vector<std::vector<int>>::iterator it = std::unique
+                                 (total_result.begin(), total_result.end());
   total_result.erase(it, total_result.end());
 
   return total_result;
@@ -383,14 +389,14 @@ std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
 AEGraph AEGraph::deiterate(std::vector<int> where) const {
   AEGraph new_graph = *this;
 
-  if (where.size() == 1) {
-    if (where[0] < new_graph.num_subgraphs()) {
+  if (where.size() == 1) {  /// reached destination
+    if (where[0] < new_graph.num_subgraphs()) {  /// remove target
       new_graph.subgraphs.erase(new_graph.subgraphs.begin() + where[0]);
     } else {
       new_graph.atoms.erase(new_graph.atoms.begin() + where[0] -
                             new_graph.num_subgraphs());
     }
-  } else if (where.size() > 1) {
+  } else if (where.size() > 1) {  /// then crawl down
     std::vector<int> new_where =
         std::vector<int>(1 + where.begin(), where.end());
     new_graph.subgraphs[where[0]] =

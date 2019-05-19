@@ -1,22 +1,35 @@
 # Tema 3 - Existential Graphs Reasoner
+/// TODO scrie comentarii la functiile implementate de tine
+# Goal
+    Our purpose was to complete the functionality of the Existential Graph
+    while retaining the coding style and methods of implementation
+    given in the skeleton of the homework. To do this we relied
+    on the extensive capabilities of the stl, specifically the
+    std::vector
 
-To run the checker, all you have to do is execute the "./run_all.sh" command.
-This command compiles your source files, then compiles the test source files
-(present in the _test folder) and runs all the test executables newly created.
-Then the checker collects all the test scores and adds them up.
+# Implementation
+    Deiterate, double_cut, erase follow the same basic recipe. Recursively
+    crawling down the tree, and when the destination is reached, 
+    apply the operation described in the documentation of the homework.
+    The operations that proved to be difficult to write were possible_erasures
+    and possible_deiterations.
 
-If you want to run the checker after changing your implementation files, all
-you have to do is run the same command again. The checker will run the Makefile
-so you won't have to do so manually.
+    For possible_deiterations, all subgraphs of a given node are iterated,
+    and each one of them is searched in the other subgraphs. Same thing
+    is happening to the atoms. All results are offloaded in a vector,
+    along with results coming from recursion. At the end it is required to
+    remove all duplicates in the result vector, since the same path may come
+    from a subgraph in another subgraph.
 
-To run the coding style checker, you can run the
-"./cpplint.py *.cpp *.h" command. The run_all.sh script also checks
-your coding style and scales your score accordingly.
+    For possible_erasures, we tried two implementations, and decided that
+    the recursion one is better suited to the coding style of the whole
+    data structure, the local stack one being noticeably longer than
+    all other functions, and harder to understand. // TODO scrie aici cum ai implementat-o
 
-The archive you have to upload to vmchecker should contain:
-- README, describing the implementation and personal contributions of team
-members
-- aegraph.cpp
+# Algorithms used
+    We mainly used the operations std::vector::erase and std::vector::insert to
+    keep the code minimalistic. In possible_deiterations, to remove duplicates
+    it was required to sort the result vector in able to apply std::unique.
 
 ## Team
 ### Rica Radu Leonard 
@@ -31,5 +44,6 @@ Done:
 * possible_deiterations()
 * deiterate(L)
 * possible_erasures() (local stack)
+* README
 
 
