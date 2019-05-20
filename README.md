@@ -24,7 +24,7 @@ from a subgraph in another subgraph.
 For possible_erasures, we tried two implementations, and decided that
 the recursion one is better suited to the coding style of the whole
 data structure, the local stack one being noticeably longer than
-all other functions, and harder to understand. // TODO scrie aici cum ai implementat-o
+all other functions, and harder to understand.
 
 # Algorithms used
 We mainly used the operations std::vector::erase and std::vector::insert to
