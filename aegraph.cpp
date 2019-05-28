@@ -350,5 +350,5 @@ std::vector<std::vector<int>> AEGraph::possible_deiterations() const {
 }
 
 AEGraph AEGraph::deiterate(std::vector<int> where) const {
-    return erase(where);
+    return this->erase(where);
 }
