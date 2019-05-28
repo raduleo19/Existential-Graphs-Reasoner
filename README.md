@@ -17,9 +17,7 @@ and possible_deiterations.
 For possible_deiterations, all subgraphs of a given node are iterated,
 and each one of them is searched in the other subgraphs. Same thing
 is happening to the atoms. All results are offloaded in a vector,
-along with results coming from recursion. At the end it is required to
-remove all duplicates in the result vector, since the same path may come
-from a subgraph in another subgraph.
+along with results coming from recursion.
 
 For possible_erasures, we tried two implementations, and decided that
 the recursion one is better suited to the coding style of the whole
@@ -28,8 +26,7 @@ all other functions, and harder to understand.
 
 # Algorithms used
 We mainly used the operations std::vector::erase and std::vector::insert to
-keep the code minimalistic. In possible_deiterations, to remove duplicates
-it was required to sort the result vector in able to apply std::unique.
+keep the code minimalistic.
 
 ## Team
 ### Rica Radu Leonard 315CA
