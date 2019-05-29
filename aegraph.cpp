@@ -1,4 +1,4 @@
-// Copyright 2019 Luca Istrate, Danut Matei
+// Copyright 2019 Luca Istrate, Danut Matei, Radu Rica, Bogdan Ciobanu
 #include <algorithm>
 #include <cassert>
 #include <iostream>
