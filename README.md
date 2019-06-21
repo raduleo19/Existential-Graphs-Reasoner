@@ -1,4 +1,4 @@
-# Tema 3 - Existential Graphs Reasoner
+# Existential Graphs Reasoner
 
 # Goal
 Our purpose was to complete the functionality of the Existential Graph
