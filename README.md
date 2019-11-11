@@ -28,12 +28,13 @@ all other functions, and harder to understand.
 We mainly used the operations std::vector::erase and std::vector::insert to
 keep the code minimalistic.
 
-## Build
+## Usage
+### Build
 ```bash
 make
 ```
 
-## Test
+### Test
 ```bash
 ./run_all.sh
 ```
