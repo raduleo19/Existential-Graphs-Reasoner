@@ -28,7 +28,7 @@ all other functions, and harder to understand.
 We mainly used the operations std::vector::erase and std::vector::insert to
 keep the code minimalistic.
 
-## Compile library
+## Build
 ```bash
 make
 ```
