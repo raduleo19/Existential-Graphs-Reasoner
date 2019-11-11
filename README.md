@@ -28,15 +28,25 @@ all other functions, and harder to understand.
 We mainly used the operations std::vector::erase and std::vector::insert to
 keep the code minimalistic.
 
-### Team
-#### Rica Radu Leonard 315CA
+## Compile library
+```bash
+make
+```
+
+## Test
+```bash
+./run_all.sh
+```
+
+## Team
+### Rica Radu Leonard 315CA
 Done:
 * possible_double_cuts()
 * double_cut(L)
 * erase(L)
 * possible_erasures() (recursion)
 
-#### Ciobanu Bogdan 315CA
+### Ciobanu Bogdan 315CA
 Done:
 * possible_deiterations()
 * deiterate(L)
