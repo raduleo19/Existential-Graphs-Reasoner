@@ -1,13 +1,13 @@
 # Existential Graphs Reasoner
 
-# Goal
+## Goal
 Our purpose was to complete the functionality of the Existential Graph
 while retaining the coding style and methods of implementation
 given in the skeleton of the homework. To do this we relied
 on the extensive capabilities of the stl, specifically the
-std::vector
+std::vector.
 
-# Implementation
+## Implementation
 Deiterate, double_cut, erase follow the same basic recipe. Recursively
 crawling down the tree, and when the destination is reached, 
 apply the operation described in the documentation of the homework.
@@ -24,19 +24,19 @@ the recursion one is better suited to the coding style of the whole
 data structure, the local stack one being noticeably longer than
 all other functions, and harder to understand.
 
-# Algorithms used
+## Algorithms used
 We mainly used the operations std::vector::erase and std::vector::insert to
 keep the code minimalistic.
 
-## Team
-### Rica Radu Leonard 315CA
+### Team
+#### Rica Radu Leonard 315CA
 Done:
 * possible_double_cuts()
 * double_cut(L)
 * erase(L)
 * possible_erasures() (recursion)
 
-### Ciobanu Bogdan 315CA
+#### Ciobanu Bogdan 315CA
 Done:
 * possible_deiterations()
 * deiterate(L)
